@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+def FACEBOOK_API_KEY = '"' + FacebookDebugApiKey + '"' ?: '"Please specify Facebook Api Key"'
+def TWITTER_API_KEY = '"' + TwitterDebugApiKey + '"' ?: '"Please specify Twitter Api Key"'
+def FABRIC_API_KEY = '"' + FabricDebugApiKey + '"' ?: '"Please specify Fabric Api Key"'
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "in.anees.key"
+        minSdkVersion 14
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        each {
+            type ->
+                // type.buildConfigField DATATYPE, 'VARIABLE_NAME', GRADLE_VARIABLE
+                type.buildConfigField "String", 'FacebookDebugApiKey', FACEBOOK_API_KEY
+                type.buildConfigField  "String", 'TwitterDebugApiKey', TWITTER_API_KEY
+                buildConfigField  "String", 'FabricDebugApiKey', FABRIC_API_KEY
+        }
+    }
+
+    buildTypes {
+        debug {
+            manifestPlaceholders = [
+                    // This is used for defining the variable for manifest file
+                    FACEBOOK_APP_KEY : FACEBOOK_API_KEY,
+                    TWITTER_APP_KEY : TWITTER_API_KEY,
+                    FABRIC_API_KEY : FABRIC_API_KEY
+            ]
+        }
+        release {
+            manifestPlaceholders = [
+                    // This is used for defining the variable for manifest file
+                    FACEBOOK_APP_KEY : "place facebook release key",
+                    TWITTER_APP_KEY :  "place twitter release key",
+                    FABRIC_API_KEY :  "place fabric release key"
+            ]
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
